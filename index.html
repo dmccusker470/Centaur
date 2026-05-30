@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Centaur — Stay sharp while you use AI</title>
+<link rel="stylesheet" href="styles/tokens.css" />
+<style>
+  /* ---------- NAV ---------- */
+  .nav {
+    position: sticky; top: 0; z-index: 50;
+    background: oklch(0.957 0.013 80 / 0.82);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 66px; }
+  .nav-links { display: flex; align-items: center; gap: var(--sp-6); }
+  .nav-links a { font-size: var(--t-sm); color: var(--ink-soft); transition: color 0.15s; }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-cta { display: flex; align-items: center; gap: var(--sp-3); }
+  @media (max-width: 860px) { .nav-links { display: none; } }
+
+  /* ---------- WORDMARK ---------- */
+  .wordmark { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: -0.02em; font-size: 1.2rem; }
+  .mark { width: 26px; height: 26px; flex: none; }
+
+  /* ---------- HERO ---------- */
+  .hero { padding: var(--sp-9) 0 var(--sp-8); position: relative; overflow: hidden; }
+  .hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: var(--sp-8); align-items: center; }
+  @media (max-width: 980px) { .hero-grid { grid-template-columns: 1fr; gap: var(--sp-7); } }
+  .hero h1 {
+    font-family: var(--serif); font-weight: 400; font-size: var(--t-display);
+    line-height: 1.02; letter-spacing: -0.025em; margin-top: var(--sp-4);
+  }
+  .hero h1 em { font-style: italic; }
+  .hero h1 .g { color: var(--enhance-deep); }
+  .hero h1 .a { color: var(--offload-deep); }
+  .hero-lead { font-size: var(--t-lead); color: var(--ink-soft); margin-top: var(--sp-5); max-width: 30em; line-height: 1.5; }
+  .hero-cta { display: flex; gap: var(--sp-3); margin-top: var(--sp-6); flex-wrap: wrap; }
+  .hero-meta { margin-top: var(--sp-6); display: flex; gap: var(--sp-5); flex-wrap: wrap; color: var(--taupe); font-size: var(--t-xs); }
+  .hero-meta b { color: var(--ink); font-weight: 500; }
+
+  /* ---------- INSTRUMENT (hero gauge) ---------- */
+  .instrument {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: var(--r-xl); box-shadow: var(--sh-3); padding: var(--sp-6);
+    position: relative;
+  }
+  .inst-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--sp-4); }
+  .inst-title { font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.16em; text-transform: uppercase; color: var(--taupe); }
+  .inst-live { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: var(--t-micro); color: var(--enhance-deep); letter-spacing: 0.1em; }
+  .inst-live .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--enhance); animation: pulse 1.8s var(--ease) infinite; }
+  @keyframes pulse { 0%,100%{ opacity:1; transform: scale(1);} 50%{ opacity:0.4; transform: scale(0.8);} }
+  .gauge-wrap { display: flex; flex-direction: column; align-items: center; }
+  .gauge-read { display: flex; align-items: baseline; gap: 8px; margin-top: var(--sp-2); }
+  .gauge-num { font-family: var(--mono); font-size: 2.6rem; font-weight: 700; letter-spacing: -0.03em; transition: color 0.4s; }
+  .gauge-state { font-family: var(--mono); font-size: var(--t-xs); letter-spacing: 0.12em; text-transform: uppercase; transition: color 0.4s; }
+  .gauge-foot { display: flex; justify-content: space-between; width: 100%; margin-top: var(--sp-4); padding-top: var(--sp-4); border-top: 1px solid var(--line); }
+  .gauge-leg { display: flex; align-items: center; gap: 7px; font-size: var(--t-xs); color: var(--ink-soft); }
+
+  /* feed of recent turns inside instrument */
+  .feed { margin-top: var(--sp-4); display: flex; flex-direction: column; gap: 7px; }
+  .feed-row { display: flex; align-items: center; gap: 10px; font-size: var(--t-xs); color: var(--ink-soft); }
+  .feed-bar { height: 6px; border-radius: var(--r-pill); flex: 1; background: var(--bone-2); overflow: hidden; }
+  .feed-fill { display: block; height: 100%; border-radius: var(--r-pill); }
+
+  /* ---------- SECTION SHELL ---------- */
+  section { padding: var(--sp-9) 0; }
+  .sec-head { max-width: 720px; margin-bottom: var(--sp-7); }
+  .sec-head h2 { font-family: var(--serif); font-weight: 400; font-size: var(--t-h1); letter-spacing: -0.02em; margin-top: var(--sp-3); }
+  .sec-head p { font-size: var(--t-lead); color: var(--ink-soft); margin-top: var(--sp-4); line-height: 1.5; }
+
+  /* ---------- QUESTION GAP (dark band) ---------- */
+  .band-deep { background: var(--ink-deep); color: var(--on-deep); }
+  .band-deep .eyebrow { color: var(--on-deep-soft); }
+  .gap-quote { font-family: var(--serif); font-weight: 400; font-size: clamp(1.8rem, 3.4vw, 2.9rem); line-height: 1.18; letter-spacing: -0.02em; max-width: 16em; }
+  .gap-quote .hl { color: oklch(0.78 0.10 152); }
+  .gap-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-6); margin-top: var(--sp-8); }
+  @media (max-width: 860px) { .gap-cols { grid-template-columns: 1fr; gap: var(--sp-6); } }
+  .gap-col { border-top: 1px solid var(--line-deep); padding-top: var(--sp-4); }
+  .gap-col .n { font-family: var(--mono); font-size: var(--t-xs); color: oklch(0.78 0.10 152); letter-spacing: 0.1em; }
+  .gap-col h4 { margin: var(--sp-3) 0 var(--sp-2); font-size: var(--t-h3); font-weight: 500; }
+  .gap-col p { color: var(--on-deep-soft); font-size: var(--t-sm); line-height: 1.55; }
+
+  /* ---------- THE SIGNAL (two columns) ---------- */
+  .signal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-5); }
+  @media (max-width: 800px) { .signal-grid { grid-template-columns: 1fr; } }
+  .signal-card { border-radius: var(--r-lg); padding: var(--sp-6); border: 1px solid; position: relative; overflow: hidden; }
+  .signal-card.enh { background: var(--enhance-soft); border-color: var(--enhance-line); }
+  .signal-card.off { background: var(--offload-soft); border-color: var(--offload-line); }
+  .signal-card h3 { font-size: var(--t-h2); font-weight: 500; font-family: var(--serif); letter-spacing: -0.02em; display: flex; align-items: center; gap: 10px; }
+  .signal-card.enh h3 { color: var(--enhance-deep); }
+  .signal-card.off h3 { color: var(--offload-deep); }
+  .signal-card .sub { font-size: var(--t-sm); margin: var(--sp-2) 0 var(--sp-5); color: var(--ink-soft); }
+  .signal-list { list-style: none; display: flex; flex-direction: column; gap: var(--sp-3); }
+  .signal-list li { display: flex; gap: 10px; font-size: var(--t-sm); line-height: 1.45; }
+  .signal-list .tick { font-family: var(--mono); flex: none; }
+  .signal-card.enh .tick { color: var(--enhance); }
+  .signal-card.off .tick { color: var(--offload); }
+
+  /* ---------- HOW IT WORKS / reframe demo ---------- */
+  .reframe { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: var(--sh-2); overflow: hidden; max-width: 720px; }
+  .rf-row { padding: var(--sp-5) var(--sp-6); border-bottom: 1px solid var(--line); }
+  .rf-row:last-child { border-bottom: none; }
+  .rf-who { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .rf-who .name { font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.12em; text-transform: uppercase; color: var(--taupe); }
+  .rf-user .txt { font-size: var(--t-body); color: var(--ink); }
+  .rf-coach { background: var(--bone); }
+  .rf-coach .txt { font-family: var(--serif); font-size: 1.18rem; line-height: 1.5; color: var(--ink); }
+  .rf-coach .txt em { color: var(--enhance-deep); font-style: italic; }
+  .rf-move { margin-top: var(--sp-3); display: flex; gap: var(--sp-2); flex-wrap: wrap; }
+
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-6); margin-top: var(--sp-7); }
+  @media (max-width: 800px) { .steps { grid-template-columns: 1fr; } }
+  .step .n { font-family: var(--mono); font-size: var(--t-xs); color: var(--enhance-deep); letter-spacing: 0.1em; }
+  .step h4 { margin: var(--sp-2) 0; font-size: var(--t-h3); font-weight: 500; }
+  .step p { color: var(--ink-soft); font-size: var(--t-sm); line-height: 1.55; }
+
+  /* ---------- FRAMEWORKS ---------- */
+  .fw-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-4); }
+  @media (max-width: 860px) { .fw-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .fw-grid { grid-template-columns: 1fr; } }
+  .fw {
+    background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md);
+    padding: var(--sp-5); transition: all 0.2s var(--ease);
+  }
+  .fw:hover { transform: translateY(-3px); box-shadow: var(--sh-2); border-color: var(--line-strong); }
+  .fw .ix { font-family: var(--mono); font-size: var(--t-micro); color: var(--taupe); letter-spacing: 0.1em; }
+  .fw h4 { margin: var(--sp-3) 0 var(--sp-2); font-size: 1.15rem; font-weight: 500; }
+  .fw p { font-size: var(--t-sm); color: var(--ink-soft); line-height: 1.5; }
+
+  /* ---------- WHO ---------- */
+  .who-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: var(--sp-8); align-items: start; }
+  @media (max-width: 860px) { .who-grid { grid-template-columns: 1fr; gap: var(--sp-6); } }
+  .verticals { display: flex; flex-direction: column; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; }
+  .vrow { background: var(--paper); padding: var(--sp-4) var(--sp-5); display: flex; justify-content: space-between; align-items: center; }
+  .vrow .v { font-weight: 500; }
+  .vrow .d { font-size: var(--t-xs); color: var(--taupe); font-family: var(--mono); }
+
+  /* ---------- MANIFESTO / CLOSE ---------- */
+  .manifesto { padding: var(--sp-10) 0; }
+  .manifesto p { font-family: var(--serif); font-weight: 400; font-size: clamp(1.5rem, 2.8vw, 2.2rem); line-height: 1.32; letter-spacing: -0.015em; max-width: 22em; }
+  .manifesto p + p { margin-top: var(--sp-6); }
+  .manifesto .muted { color: var(--taupe); }
+  .manifesto em { font-style: italic; color: var(--enhance-deep); }
+
+  /* ---------- CTA + FOOTER ---------- */
+  .cta { background: var(--ink-deep); color: var(--on-deep); border-radius: var(--r-xl); padding: var(--sp-9) var(--sp-7); text-align: center; }
+  .cta h2 { font-family: var(--serif); font-weight: 400; font-size: var(--t-h1); letter-spacing: -0.02em; }
+  .cta p { color: var(--on-deep-soft); margin: var(--sp-4) auto var(--sp-6); max-width: 34em; font-size: var(--t-lead); }
+  .cta .btn-primary { background: var(--bone); color: var(--ink); }
+  .cta .btn-primary:hover { background: oklch(0.78 0.10 152); color: var(--ink); }
+  .cta .btn-ghost { color: var(--on-deep); border-color: var(--line-deep); }
+  .cta .btn-ghost:hover { border-color: var(--on-deep); background: transparent; }
+
+  footer { padding: var(--sp-7) 0; border-top: 1px solid var(--line); margin-top: var(--sp-9); }
+  .foot-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--sp-4); }
+  .foot-links { display: flex; gap: var(--sp-5); font-size: var(--t-sm); color: var(--ink-soft); }
+  .foot-links a:hover { color: var(--ink); }
+  .foot-fine { font-family: var(--mono); font-size: var(--t-micro); color: var(--taupe); letter-spacing: 0.06em; }
+
+  .divider-label { display: flex; align-items: center; gap: var(--sp-4); color: var(--taupe); }
+  .divider-label::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<nav class="nav">
+  <div class="wrap nav-inner">
+    <a href="index.html" class="wordmark">
+      <svg class="mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="16" r="15" stroke="var(--ink)" stroke-width="1.5"/>
+        <path d="M16 1 A15 15 0 0 1 16 31 Z" fill="var(--enhance)" opacity="0.18"/>
+        <path d="M16 1 A15 15 0 0 0 16 31 Z" fill="var(--offload)" opacity="0.16"/>
+        <line x1="16" y1="16" x2="25" y2="9" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="16" cy="16" r="2.6" fill="var(--ink)"/>
+      </svg>
+      Centaur
+    </a>
+    <div class="nav-links">
+      <a href="#gap">The gap</a>
+      <a href="#signal">The signal</a>
+      <a href="#how">How it works</a>
+      <a href="#frameworks">Frameworks</a>
+      <a href="brand.html">Brand</a>
+    </div>
+    <div class="nav-cta">
+      <a href="product.html" class="btn btn-primary"><svg class="btn-ico" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M3 3.75h12A1.75 1.75 0 0 1 16.75 5.5v5A1.75 1.75 0 0 1 15 12.25H7.5L4 15.25v-3H3A1.75 1.75 0 0 1 1.25 10.5v-5A1.75 1.75 0 0 1 3 3.75Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Start a session <span class="btn-arrow">→</span></a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">The human–AI thinking partner</span>
+      <h1>AI should make you <em class="g">sharper</em>,<br>not <em class="a">softer</em>.</h1>
+      <p class="hero-lead">Centaur is a thinking coach that shows you, in real time, whether you're enhancing your own reasoning or quietly offloading it. It never writes the memo. It asks the question that makes you write a better one.</p>
+      <div class="hero-cta">
+        <a href="product.html" class="btn btn-primary"><svg class="btn-ico" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M3 3.75h12A1.75 1.75 0 0 1 16.75 5.5v5A1.75 1.75 0 0 1 15 12.25H7.5L4 15.25v-3H3A1.75 1.75 0 0 1 1.25 10.5v-5A1.75 1.75 0 0 1 3 3.75Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Start a live session <span class="btn-arrow">→</span></a>
+        <a href="#gap" class="btn btn-ghost">See how it works</a>
+      </div>
+      <div class="hero-meta">
+        <span><b>Socratic</b> by design</span>
+        <span><b>Never</b> flatters you</span>
+        <span><b>Built for</b> knowledge workers</span>
+      </div>
+    </div>
+
+    <!-- live instrument -->
+    <div class="instrument" id="instrument">
+      <div class="inst-head">
+        <span class="inst-title">Cognitive Signal</span>
+        <span class="inst-live"><span class="pulse"></span>LIVE SESSION</span>
+      </div>
+      <div class="gauge-wrap">
+        <svg viewBox="0 0 280 158" width="100%" id="gauge" aria-hidden="true">
+          <!-- track -->
+          <path d="M 24 148 A 116 116 0 0 1 256 148" fill="none" stroke="var(--bone-2)" stroke-width="18" stroke-linecap="round"/>
+          <!-- amber zone -->
+          <path d="M 24 148 A 116 116 0 0 1 140 32" fill="none" stroke="var(--offload)" stroke-width="18" stroke-linecap="round" opacity="0.85"/>
+          <!-- green zone -->
+          <path d="M 140 32 A 116 116 0 0 1 256 148" fill="none" stroke="var(--enhance)" stroke-width="18" stroke-linecap="round" opacity="0.9"/>
+          <!-- needle -->
+          <g id="needle" style="transition: transform 0.7s var(--ease); transform-origin: 140px 148px;">
+            <line x1="140" y1="148" x2="140" y2="46" stroke="var(--ink)" stroke-width="3.5" stroke-linecap="round"/>
+            <circle cx="140" cy="148" r="9" fill="var(--ink)"/>
+            <circle cx="140" cy="148" r="3.5" fill="var(--paper)"/>
+          </g>
+        </svg>
+        <div class="gauge-read">
+          <span class="gauge-num" id="gNum">—</span>
+          <span class="gauge-state" id="gState">CALIBRATING</span>
+        </div>
+        <div class="gauge-foot">
+          <span class="gauge-leg"><span class="dot dot-offload"></span> Offloading</span>
+          <span class="gauge-leg">Enhancing <span class="dot dot-enhance"></span></span>
+        </div>
+      </div>
+      <div class="feed" id="feed"></div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ THE GAP (dark) ============ -->
+<section id="gap" class="band-deep">
+  <div class="wrap">
+    <span class="eyebrow">The question gap</span>
+    <p class="gap-quote" style="margin-top: var(--sp-5)">The commodity is the answer. <br>The scarce good is the <span class="hl">quality of the question.</span></p>
+    <div class="gap-cols">
+      <div class="gap-col">
+        <span class="n">01</span>
+        <h4>Answers got free</h4>
+        <p>Frontier models can reason through almost anything you put to them. The supply of competent answers is effectively infinite — and effectively worthless.</p>
+      </div>
+      <div class="gap-col">
+        <span class="n">02</span>
+        <h4>Questions didn't keep up</h4>
+        <p>The gap between what AI can reason through and what we actually ask it to is widening. Most of us prompt for a verdict, take it, and move on.</p>
+      </div>
+      <div class="gap-col">
+        <span class="n">03</span>
+        <h4>The muscle atrophies</h4>
+        <p>Every time you outsource the thinking instead of the typing, the part of you that does the thinking gets a little weaker. Centaur is the friction that keeps it strong.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE SIGNAL ============ -->
+<section id="signal">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">The signal</span>
+      <h2>Two ways to use a mind like this.</h2>
+      <p>Centaur reads every turn of the conversation and places it on one axis. Not to grade you — to make a usually-invisible habit visible while you can still change it.</p>
+    </div>
+    <div class="signal-grid">
+      <div class="signal-card enh">
+        <h3><span class="dot dot-enhance" style="width:12px;height:12px"></span> Enhancing</h3>
+        <p class="sub">You're doing the thinking. The AI is sharpening it.</p>
+        <ul class="signal-list">
+          <li><span class="tick">+</span> You bring a real tension, not a vague topic</li>
+          <li><span class="tick">+</span> You explain your reasoning — the <em>because</em>, not just the <em>what</em></li>
+          <li><span class="tick">+</span> You engage the pushback instead of conceding it</li>
+          <li><span class="tick">+</span> You name your own assumptions out loud</li>
+          <li><span class="tick">+</span> You leave with a harder question than you came with</li>
+        </ul>
+      </div>
+      <div class="signal-card off">
+        <h3><span class="dot dot-offload" style="width:12px;height:12px"></span> Offloading</h3>
+        <p class="sub">The AI is doing the thinking. You're collecting the output.</p>
+        <ul class="signal-list">
+          <li><span class="tick">–</span> You ask for a yes/no verdict on a decision</li>
+          <li><span class="tick">–</span> You want the answer written, not the problem understood</li>
+          <li><span class="tick">–</span> You ask "what's the best approach" before defining the problem</li>
+          <li><span class="tick">–</span> You're seeking validation, not examination</li>
+          <li><span class="tick">–</span> "Just tell me what to do."</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section id="how" style="background: var(--bone-2);">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">The behavior-change mechanic</span>
+      <h2>It coaches the question, not just the answer.</h2>
+      <p>When your prompt is shallow, Centaur doesn't quietly work around it. It names what's missing, offers a sharper version, and tells you why — so eventually you ask that question before you ever open the app.</p>
+    </div>
+
+    <div class="reframe">
+      <div class="rf-row rf-user">
+        <div class="rf-who"><span class="dot dot-offload"></span><span class="name">You</span></div>
+        <div class="txt">"I'm thinking of launching a new product line. Is it a good idea?"</div>
+      </div>
+      <div class="rf-row rf-coach">
+        <div class="rf-who"><span class="dot dot-enhance"></span><span class="name">Centaur</span></div>
+        <div class="txt">That question is looking for a verdict — and I don't think a verdict is what helps you here. A more productive one: <em>What's the scenario where this fails, and why haven't you ruled it out yet?</em> That's where your actual thinking needs to happen.</div>
+        <div class="rf-move">
+          <span class="chip chip-offload">Shallow prompt detected</span>
+          <span class="chip chip-enhance">Reframed → enhancing</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <span class="n">STEP 01</span>
+        <h4>Name what's missing</h4>
+        <p>One sentence, descriptive not judgmental — what kind of question this is and why it limits the session.</p>
+      </div>
+      <div class="step">
+        <span class="n">STEP 02</span>
+        <h4>Model a better question</h4>
+        <p>A sharper, harder, more generative version of what you could be asking yourself instead.</p>
+      </div>
+      <div class="step">
+        <span class="n">STEP 03</span>
+        <h4>Explain the move</h4>
+        <p>One line on why the reframe is more useful. The teaching moment that builds the habit over time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FRAMEWORKS ============ -->
+<section id="frameworks">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Guided modes</span>
+      <h2>Proven reasoning frameworks, run as a dialogue.</h2>
+      <p>Start open-ended, or launch a structured session built around a way of thinking that's worth borrowing.</p>
+    </div>
+    <div class="fw-grid">
+      <div class="fw"><span class="ix">MODE 01</span><h4>First Principles</h4><p>Break the problem down to its irreducible truths, then reason back up from bedrock.</p></div>
+      <div class="fw"><span class="ix">MODE 02</span><h4>Pre-Mortem</h4><p>It's a year from now and the plan failed completely. What happened — and why didn't you see it?</p></div>
+      <div class="fw"><span class="ix">MODE 03</span><h4>Devil's Advocate</h4><p>Centaur argues the strongest case against you, seriously, until your position has earned its keep.</p></div>
+      <div class="fw"><span class="ix">MODE 04</span><h4>Inversion</h4><p>Work backward from the outcome you most want to avoid to find what to stop doing now.</p></div>
+      <div class="fw"><span class="ix">MODE 05</span><h4>Five Whys</h4><p>Iterative root-cause analysis. Each "why" peels back one more layer of the real explanation.</p></div>
+      <div class="fw" style="background:var(--ink); color:var(--bone); border-color:var(--ink); display:flex; flex-direction:column; justify-content:space-between;">
+        <span class="ix" style="color:var(--on-deep-soft)">OPEN</span>
+        <div>
+          <h4 style="color:var(--bone)">Just think out loud</h4>
+          <p style="color:var(--on-deep-soft)">Bring whatever you're chewing on. Centaur finds the tension and starts there.</p>
+        </div>
+        <a href="product.html" style="color:oklch(0.82 0.10 152); font-size:var(--t-sm); margin-top:var(--sp-3); display:inline-flex; gap:6px;">Start a session →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHO IT'S FOR ============ -->
+<section id="who" style="background: var(--bone-2);">
+  <div class="wrap who-grid">
+    <div>
+      <span class="eyebrow">Who it's for</span>
+      <h2 class="serif" style="font-weight:400; font-size:var(--t-h1); letter-spacing:-0.02em; margin-top:var(--sp-3);">For people whose output is their thinking.</h2>
+      <p style="font-size:var(--t-lead); color:var(--ink-soft); margin-top:var(--sp-4); line-height:1.5;">Remote work removed the hallway disagreement and the meeting pushback. Centaur replaces that missing friction — built first for the fields where rigor isn't optional.</p>
+      <p style="color:var(--ink-soft); margin-top:var(--sp-4); max-width:34em;">Analysts, researchers, strategists, founders, writers, and anyone who suspects their first answer is rarely their best one.</p>
+    </div>
+    <div class="verticals">
+      <div class="vrow"><span class="v">Strategy &amp; consulting</span><span class="d">rigor = the product</span></div>
+      <div class="vrow"><span class="v">Law</span><span class="d">argue both sides</span></div>
+      <div class="vrow"><span class="v">Research &amp; academia</span><span class="d">interrogate the claim</span></div>
+      <div class="vrow"><span class="v">Founders &amp; product</span><span class="d">pre-mortem everything</span></div>
+      <div class="vrow"><span class="v">Writers &amp; analysts</span><span class="d">find the real question</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MANIFESTO ============ -->
+<section class="manifesto">
+  <div class="wrap-narrow">
+    <span class="eyebrow">Why "Centaur"</span>
+    <p style="margin-top:var(--sp-5)">In chess, a <em>centaur</em> is a human and an engine playing as one — and for years that pairing beat both the best humans and the best machines alone.</p>
+    <p class="muted">The lesson wasn't that the machine was smart. It was that the <span style="color:var(--ink)">human stayed in the loop</span> — directing, questioning, deciding.</p>
+    <p>The fastest way to lose that advantage is to stop thinking and start collecting answers. Centaur is built to keep you in the loop — to make the offloading visible the moment it starts.</p>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section style="padding-top:0;">
+  <div class="wrap">
+    <div class="cta">
+      <span class="eyebrow" style="color:var(--on-deep-soft)">See it for yourself</span>
+      <h2 style="margin-top:var(--sp-3)">Watch the needle move.</h2>
+      <p>Open a live session and ask a lazy question on purpose. Then ask a real one. The difference is the whole product.</p>
+      <div style="display:flex; gap:var(--sp-3); justify-content:center; flex-wrap:wrap;">
+        <a href="product.html" class="btn btn-primary"><svg class="btn-ico" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M3 3.75h12A1.75 1.75 0 0 1 16.75 5.5v5A1.75 1.75 0 0 1 15 12.25H7.5L4 15.25v-3H3A1.75 1.75 0 0 1 1.25 10.5v-5A1.75 1.75 0 0 1 3 3.75Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Start a live session <span class="btn-arrow">→</span></a>
+        <a href="brand.html" class="btn btn-ghost">View the brand guide</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap foot-inner">
+    <a href="index.html" class="wordmark" style="font-size:1.05rem;">
+      <svg class="mark" viewBox="0 0 32 32" fill="none" style="width:22px;height:22px" aria-hidden="true">
+        <circle cx="16" cy="16" r="15" stroke="var(--ink)" stroke-width="1.5"/>
+        <line x1="16" y1="16" x2="25" y2="9" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="16" cy="16" r="2.6" fill="var(--ink)"/>
+      </svg>
+      Centaur
+    </a>
+    <div class="foot-links">
+      <a href="#signal">The signal</a>
+      <a href="product.html">Live session</a>
+      <a href="brand.html">Brand</a>
+      <a href="#frameworks">Frameworks</a>
+    </div>
+    <span class="foot-fine">STAY IN THE LOOP · 2026</span>
+  </div>
+</footer>
+
+<script>
+  // ---- Hero instrument: animated demonstration of a session signal ----
+  (function () {
+    const needle = document.getElementById('needle');
+    const gNum = document.getElementById('gNum');
+    const gState = document.getElementById('gState');
+    const feed = document.getElementById('feed');
+
+    // a scripted session arc: starts offloading, gets coached, climbs to enhancing
+    const turns = [
+      { label: 'Should I do X?', v: 22 },
+      { label: 'reframed →', v: 48 },
+      { label: 'here\'s my reasoning…', v: 67 },
+      { label: 'engaged the pushback', v: 81 },
+      { label: 'named the assumption', v: 90 },
+    ];
+
+    function colorFor(v) {
+      // interpolate amber→green via hue in oklch
+      const t = v / 100;
+      const hue = 68 + (152 - 68) * t;
+      const l = 0.58 + 0.04 * t;
+      return `oklch(${l} 0.118 ${hue})`;
+    }
+    function stateFor(v) {
+      if (v < 38) return 'OFFLOADING';
+      if (v < 62) return 'MIXED';
+      return 'ENHANCING';
+    }
+
+    function setGauge(v) {
+      const angle = -90 + (v / 100) * 180; // -90 (left) .. +90 (right)
+      needle.style.transform = `rotate(${angle}deg)`;
+      gNum.textContent = Math.round(v);
+      const c = colorFor(v);
+      gNum.style.color = c;
+      gState.textContent = stateFor(v);
+      gState.style.color = c;
+    }
+
+    function renderFeed(uptoIdx) {
+      feed.innerHTML = '';
+      turns.slice(0, uptoIdx + 1).forEach((t) => {
+        const row = document.createElement('div');
+        row.className = 'feed-row';
+        row.innerHTML = `<span style="font-family:var(--mono);font-size:11px;width:14ch;flex:none;color:var(--taupe)">${t.label}</span>
+          <span class="feed-bar"><span class="feed-fill" style="width:${t.v}%;background:${colorFor(t.v)}"></span></span>`;
+        feed.appendChild(row);
+      });
+    }
+
+    let i = -1;
+    function loop() {
+      i = (i + 1) % (turns.length + 1);
+      if (i === turns.length) {
+        // brief hold on full session, then restart from offload
+        setGauge(turns[turns.length - 1].v);
+        renderFeed(turns.length - 1);
+        setTimeout(loop, 2600);
+        return;
+      }
+      setGauge(turns[i].v);
+      renderFeed(i);
+      setTimeout(loop, i === 0 ? 1500 : 1700);
+    }
+    setGauge(50);
+    setTimeout(loop, 700);
+  })();
+</script>
+
+<template id="__bundler_thumbnail">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="100" fill="#F4EFE3"/>
+    <path d="M 22 70 A 28 28 0 0 1 50 42" fill="none" stroke="#C99A4E" stroke-width="6" stroke-linecap="round"/>
+    <path d="M 50 42 A 28 28 0 0 1 78 70" fill="none" stroke="#4E8B5E" stroke-width="6" stroke-linecap="round"/>
+    <line x1="50" y1="70" x2="64" y2="52" stroke="#2A2520" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="50" cy="70" r="4.5" fill="#2A2520"/>
+  </svg>
+</template>
+
+</body>
+</html>

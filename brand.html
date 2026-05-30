@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Centaur — Brand Guide</title>
+<link rel="stylesheet" href="styles/tokens.css" />
+<style>
+  .bnav { position: sticky; top: 0; z-index: 50; background: oklch(0.957 0.013 80 / 0.85); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+  .bnav-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .wordmark { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: -0.02em; font-size: 1.15rem; }
+  .bnav-links { display: flex; gap: var(--sp-5); font-size: var(--t-sm); color: var(--ink-soft); }
+  .bnav-links a:hover { color: var(--ink); }
+  @media (max-width: 760px){ .bnav-links { display: none; } }
+
+  /* cover */
+  .cover { padding: var(--sp-10) 0 var(--sp-8); }
+  .cover .eyebrow { display: block; margin-bottom: var(--sp-4); }
+  .cover h1 { font-family: var(--serif); font-weight: 400; font-size: var(--t-display); letter-spacing: -0.025em; line-height: 1.0; }
+  .cover p { font-size: var(--t-lead); color: var(--ink-soft); max-width: 32em; margin-top: var(--sp-5); line-height: 1.5; }
+
+  /* section scaffold */
+  .bsec { padding: var(--sp-8) 0; border-top: 1px solid var(--line); }
+  .bsec-head { display: flex; align-items: baseline; gap: var(--sp-4); margin-bottom: var(--sp-6); }
+  .bsec-num { font-family: var(--mono); font-size: var(--t-sm); color: var(--taupe); }
+  .bsec h2 { font-family: var(--serif); font-weight: 400; font-size: var(--t-h2); letter-spacing: -0.02em; }
+  .bsec-lead { color: var(--ink-soft); max-width: 56ch; margin-bottom: var(--sp-6); margin-top: calc(-1 * var(--sp-3)); }
+
+  .label { font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.14em; text-transform: uppercase; color: var(--taupe); margin-bottom: var(--sp-3); }
+
+  /* ---- logo ---- */
+  .logo-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: var(--sp-6); align-items: stretch; }
+  @media (max-width: 760px){ .logo-grid { grid-template-columns: 1fr; } }
+  .logo-tile { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-lg); padding: var(--sp-7); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--sp-5); }
+  .logo-tile.deep { background: var(--ink-deep); }
+  .logo-lockup { display: inline-flex; align-items: center; gap: 14px; font-weight: 600; font-size: 2rem; letter-spacing: -0.025em; }
+  .logo-tile.deep .logo-lockup { color: var(--on-deep); }
+  .logo-cap { font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.12em; color: var(--taupe); }
+  .logo-tile.deep .logo-cap { color: var(--on-deep-soft); }
+  .mark-notes { display: flex; flex-direction: column; gap: var(--sp-4); }
+  .mark-note { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); padding: var(--sp-4) var(--sp-5); }
+  .mark-note h4 { font-size: var(--t-sm); font-weight: 600; margin-bottom: 4px; }
+  .mark-note p { font-size: var(--t-sm); color: var(--ink-soft); line-height: 1.5; }
+
+  /* ---- color ---- */
+  .sw-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-4); }
+  @media (max-width: 860px){ .sw-grid { grid-template-columns: repeat(2,1fr); } }
+  @media (max-width: 480px){ .sw-grid { grid-template-columns: 1fr; } }
+  .sw { border-radius: var(--r-md); border: 1px solid var(--line); overflow: hidden; background: var(--paper); }
+  .sw-chip { height: 96px; }
+  .sw-body { padding: var(--sp-3) var(--sp-4) var(--sp-4); }
+  .sw-name { font-weight: 600; font-size: var(--t-sm); }
+  .sw-use { font-size: var(--t-xs); color: var(--taupe); margin: 2px 0 8px; }
+  .sw-vals { display: flex; flex-direction: column; gap: 1px; }
+  .sw-val { font-family: var(--mono); font-size: 11px; color: var(--ink-soft); }
+  .sub-h { font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.14em; text-transform: uppercase; color: var(--taupe); margin: var(--sp-6) 0 var(--sp-3); }
+
+  /* ---- signal usage ---- */
+  .sig-demo { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); }
+  @media (max-width: 760px){ .sig-demo { grid-template-columns: 1fr; } }
+  .sig-box { border-radius: var(--r-md); padding: var(--sp-5); border: 1px solid; }
+  .sig-box.do { background: var(--enhance-soft); border-color: var(--enhance-line); }
+  .sig-box.dont { background: var(--offload-soft); border-color: var(--offload-line); }
+  .sig-box .tag { font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; }
+  .sig-box.do .tag { color: var(--enhance-deep); }
+  .sig-box.dont .tag { color: var(--offload-deep); }
+  .sig-box ul { list-style: none; margin-top: var(--sp-3); display: flex; flex-direction: column; gap: 8px; }
+  .sig-box li { font-size: var(--t-sm); display: flex; gap: 8px; }
+  .sig-box li .m { font-family: var(--mono); }
+
+  /* ---- type ---- */
+  .type-row { padding: var(--sp-5) 0; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 180px 1fr; gap: var(--sp-5); align-items: baseline; }
+  @media (max-width: 700px){ .type-row { grid-template-columns: 1fr; gap: var(--sp-3); } }
+  .type-meta .fam { font-weight: 600; font-size: var(--t-body); }
+  .type-meta .role { font-size: var(--t-xs); color: var(--taupe); font-family: var(--mono); letter-spacing: 0.04em; }
+  .type-spec-serif { font-family: var(--serif); font-weight: 400; font-size: 2.4rem; letter-spacing: -0.02em; line-height: 1.1; }
+  .type-spec-sans { font-family: var(--sans); font-weight: 500; font-size: 2rem; letter-spacing: -0.02em; }
+  .type-spec-mono { font-family: var(--mono); font-size: 1.4rem; }
+  .type-scale { font-size: var(--t-xs); color: var(--taupe); font-family: var(--mono); margin-top: 8px; }
+
+  /* ---- components ---- */
+  .comp-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--sp-4); }
+  @media (max-width: 760px){ .comp-grid { grid-template-columns: 1fr; } }
+  .comp { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); padding: var(--sp-5); }
+  .comp .label { margin-bottom: var(--sp-4); }
+  .comp-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+
+  .demo-bubble-coach { background: var(--bone); border: 1px solid var(--line); border-radius: var(--r-lg); border-top-left-radius: 4px; padding: 12px 16px; font-family: var(--serif); font-size: 1.05rem; line-height: 1.5; }
+  .demo-bubble-coach em { font-style: italic; color: var(--enhance-deep); }
+  .demo-bubble-user { background: var(--ink); color: var(--bone); border-radius: var(--r-lg); border-top-right-radius: 4px; padding: 12px 16px; font-size: var(--t-sm); margin-top: 10px; margin-left: auto; max-width: 80%; }
+
+  .demo-input { display: flex; align-items: center; gap: 10px; background: var(--bone); border: 1px solid var(--line-strong); border-radius: var(--r-lg); padding: 8px 8px 8px 16px; }
+  .demo-input span { color: var(--taupe); flex: 1; font-size: var(--t-sm); }
+  .demo-send { width: 36px; height: 36px; border-radius: var(--r-md); background: var(--ink); color: var(--bone); border: none; display: flex; align-items: center; justify-content: center; }
+
+  .demo-mode { display: inline-flex; align-items: center; gap: 8px; background: var(--bone); border: 1px solid var(--line-strong); border-radius: var(--r-pill); padding: 7px 14px; font-size: var(--t-sm); }
+
+  /* ---- voice ---- */
+  .voice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-6); }
+  @media (max-width: 760px){ .voice-grid { grid-template-columns: 1fr; } }
+  .voice-col h4 { font-family: var(--mono); font-size: var(--t-xs); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: var(--sp-4); }
+  .voice-col.do h4 { color: var(--enhance-deep); }
+  .voice-col.dont h4 { color: var(--offload-deep); }
+  .voice-col ul { list-style: none; display: flex; flex-direction: column; gap: var(--sp-3); }
+  .voice-col li { font-size: var(--t-sm); display: flex; gap: 10px; line-height: 1.5; }
+  .voice-col .m { font-family: var(--mono); flex: none; }
+  .voice-col.do .m { color: var(--enhance); }
+  .voice-col.dont .m { color: var(--offload); }
+
+  /* ---- tokens ---- */
+  .tok-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: var(--sp-4); }
+  @media (max-width: 760px){ .tok-grid { grid-template-columns: 1fr; } }
+  .tok { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); padding: var(--sp-5); }
+  .tok .label { margin-bottom: var(--sp-4); }
+  .tok-item { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; font-family: var(--mono); font-size: var(--t-xs); color: var(--ink-soft); }
+  .tok-bar { background: var(--enhance); height: 12px; border-radius: 2px; flex: none; }
+  .tok-radius { background: var(--bone-2); border: 1px solid var(--line-strong); border-right: none; border-bottom: none; height: 40px; width: 40px; flex: none; }
+  .tok-shadow { width: 48px; height: 32px; background: var(--paper); border-radius: var(--r-sm); flex: none; }
+
+  footer { padding: var(--sp-7) 0 var(--sp-8); border-top: 1px solid var(--line); margin-top: var(--sp-7); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--sp-4); }
+  .foot-fine { font-family: var(--mono); font-size: var(--t-micro); color: var(--taupe); letter-spacing: 0.06em; }
+  .foot-links { display: flex; gap: var(--sp-5); font-size: var(--t-sm); color: var(--ink-soft); }
+  .foot-links a:hover { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<nav class="bnav">
+  <div class="wrap bnav-inner">
+    <a href="index.html" class="wordmark">
+      <svg viewBox="0 0 32 32" fill="none" width="24" height="24" aria-hidden="true">
+        <circle cx="16" cy="16" r="15" stroke="var(--ink)" stroke-width="1.5"/>
+        <line x1="16" y1="16" x2="25" y2="9" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="16" cy="16" r="2.6" fill="var(--ink)"/>
+      </svg>
+      Centaur
+    </a>
+    <div class="bnav-links">
+      <a href="#logo">Logo</a>
+      <a href="#color">Color</a>
+      <a href="#signal">Signal</a>
+      <a href="#type">Type</a>
+      <a href="#components">Components</a>
+      <a href="#voice">Voice</a>
+    </div>
+    <a href="product.html" class="btn btn-primary" style="padding:8px 16px;">Open the demo →</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- COVER -->
+  <header class="cover">
+    <span class="eyebrow">Brand Guide · v1 · 2026</span>
+    <h1>The system behind<br>the signal.</h1>
+    <p>Centaur is warm, rigorous, and a little futurist — credible enough to trust with your thinking, human enough to want to. This guide defines the marks, color, type, components, and voice that keep it consistent.</p>
+  </header>
+
+  <!-- 01 LOGO -->
+  <section class="bsec" id="logo">
+    <div class="bsec-head"><span class="bsec-num">01</span><h2>Logomark</h2></div>
+    <p class="bsec-lead">The mark is a gauge: a ring split into an amber half and a green half, with a needle reading toward the green. It carries the entire product idea — offloading on one side, enhancing on the other, you somewhere on the dial.</p>
+    <div class="logo-grid">
+      <div class="logo-tile">
+        <svg viewBox="0 0 72 72" width="120" height="120" fill="none" aria-hidden="true">
+          <circle cx="36" cy="36" r="33" stroke="var(--ink)" stroke-width="2"/>
+          <path d="M36 3 A33 33 0 0 1 36 69 Z" fill="var(--enhance)" opacity="0.16"/>
+          <path d="M36 3 A33 33 0 0 0 36 69 Z" fill="var(--offload)" opacity="0.16"/>
+          <line x1="36" y1="36" x2="56" y2="20" stroke="var(--ink)" stroke-width="3.5" stroke-linecap="round"/>
+          <circle cx="36" cy="36" r="5.5" fill="var(--ink)"/>
+          <circle cx="36" cy="36" r="2" fill="var(--paper)"/>
+        </svg>
+        <div class="logo-lockup">
+          <svg viewBox="0 0 32 32" width="34" height="34" fill="none" aria-hidden="true">
+            <circle cx="16" cy="16" r="15" stroke="var(--ink)" stroke-width="1.5"/>
+            <line x1="16" y1="16" x2="25" y2="9" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="16" cy="16" r="2.6" fill="var(--ink)"/>
+          </svg>
+          Centaur
+        </div>
+        <span class="logo-cap">PRIMARY · ON BONE</span>
+      </div>
+      <div class="mark-notes">
+        <div class="mark-note"><h4>The dial reads right</h4><p>At rest, the needle points into the green. The brand is optimistic: the default posture is enhancement, not warning.</p></div>
+        <div class="mark-note"><h4>Clear space &amp; size</h4><p>Keep clear space equal to the ring's radius on all sides. Minimum mark size 20px; below that, drop the dial halves and keep needle + ring.</p></div>
+        <div class="mark-note"><h4>Don't</h4><p>Don't recolor the needle, flip it toward amber, add gradients, or set the wordmark in the serif. The wordmark is always Space Grotesk, 600.</p></div>
+        <div class="logo-tile deep" style="padding:var(--sp-5)">
+          <div class="logo-lockup" style="font-size:1.5rem">
+            <svg viewBox="0 0 32 32" width="28" height="28" fill="none" aria-hidden="true">
+              <circle cx="16" cy="16" r="15" stroke="var(--on-deep)" stroke-width="1.5"/>
+              <line x1="16" y1="16" x2="25" y2="9" stroke="var(--on-deep)" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="16" cy="16" r="2.6" fill="var(--on-deep)"/>
+            </svg>
+            Centaur
+          </div>
+          <span class="logo-cap">REVERSED · ON DEEP INK</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 COLOR -->
+  <section class="bsec" id="color">
+    <div class="bsec-head"><span class="bsec-num">02</span><h2>Color</h2></div>
+    <p class="bsec-lead">A warm-neutral ground — bone, paper, taupe, warm ink — that recedes so the work and the signal can speak. Everything is defined in oklch; hex values are derived fallbacks.</p>
+
+    <div class="sub-h">Foundation</div>
+    <div class="sw-grid">
+      <div class="sw"><div class="sw-chip" style="background:var(--bone)"></div><div class="sw-body"><div class="sw-name">Bone</div><div class="sw-use">Page background</div><div class="sw-vals"><span class="sw-val">oklch(.957 .013 80)</span><span class="sw-val">#F5F0E7</span></div></div></div>
+      <div class="sw"><div class="sw-chip" style="background:var(--paper); box-shadow: inset 0 0 0 1px var(--line)"></div><div class="sw-body"><div class="sw-name">Paper</div><div class="sw-use">Cards, surfaces</div><div class="sw-vals"><span class="sw-val">oklch(.987 .008 86)</span><span class="sw-val">#FDFAF5</span></div></div></div>
+      <div class="sw"><div class="sw-chip" style="background:var(--bone-2)"></div><div class="sw-body"><div class="sw-name">Bone 2</div><div class="sw-use">Sunken / alt band</div><div class="sw-vals"><span class="sw-val">oklch(.935 .015 78)</span><span class="sw-val">#EFE9DF</span></div></div></div>
+      <div class="sw"><div class="sw-chip" style="background:var(--line)"></div><div class="sw-body"><div class="sw-name">Line</div><div class="sw-use">Hairline borders</div><div class="sw-vals"><span class="sw-val">oklch(.872 .014 78)</span><span class="sw-val">#DAD4CB</span></div></div></div>
+      <div class="sw"><div class="sw-chip" style="background:var(--ink)"></div><div class="sw-body"><div class="sw-name">Ink</div><div class="sw-use">Primary text</div><div class="sw-vals"><span class="sw-val">oklch(.255 .018 58)</span><span class="sw-val">#2A211A</span></div></div></div>
+      <div class="sw"><div class="sw-chip" style="background:var(--ink-soft)"></div><div class="sw-body"><div class="sw-name">Ink Soft</div><div class="sw-use">Secondary text</div><div class="sw-vals"><span class="sw-val">oklch(.415 .018 60)</span><span class="sw-val">#534A42</span></div></div></div>
+      <div class="sw"><div class="sw-chip" style="background:var(--taupe)"></div><div class="sw-body"><div class="sw-name">Taupe</div><div class="sw-use">Muted / captions</div><div class="sw-vals"><span class="sw-val">oklch(.575 .017 68)</span><span class="sw-val">#80776E</span></div></div></div>
+      <div class="sw"><div class="sw-chip" style="background:var(--ink-deep)"></div><div class="sw-body"><div class="sw-name">Deep Ink</div><div class="sw-use">Contrast band</div><div class="sw-vals"><span class="sw-val">oklch(.225 .016 58)</span><span class="sw-val">#221A14</span></div></div></div>
+    </div>
+
+    <div class="sub-h">The Signal — two semantic colors</div>
+    <div class="sw-grid">
+      <div class="sw"><div class="sw-chip" style="background:var(--enhance)"></div><div class="sw-body"><div class="sw-name">Enhance</div><div class="sw-use">Sharpening your thinking</div><div class="sw-vals"><span class="sw-val">oklch(.605 .118 152)</span><span class="sw-val">#42965D</span></div></div></div>
+      <div class="sw"><div class="sw-chip" style="background:var(--enhance-deep)"></div><div class="sw-body"><div class="sw-name">Enhance Deep</div><div class="sw-use">Text, emphasis</div><div class="sw-vals"><span class="sw-val">oklch(.46 .10 152)</span><span class="sw-val">#22683B</span></div></div></div>
+      <div class="sw"><div class="sw-chip" style="background:var(--offload)"></div><div class="sw-body"><div class="sw-name">Offload</div><div class="sw-use">Outsourcing your thinking</div><div class="sw-vals"><span class="sw-val">oklch(.715 .118 68)</span><span class="sw-val">#D3944A</span></div></div></div>
+      <div class="sw"><div class="sw-chip" style="background:var(--offload-deep)"></div><div class="sw-body"><div class="sw-name">Offload Deep</div><div class="sw-use">Text, emphasis</div><div class="sw-vals"><span class="sw-val">oklch(.58 .11 62)</span><span class="sw-val">#A86A2C</span></div></div></div>
+    </div>
+  </section>
+
+  <!-- 03 SIGNAL -->
+  <section class="bsec" id="signal">
+    <div class="bsec-head"><span class="bsec-num">03</span><h2>Using the signal</h2></div>
+    <p class="bsec-lead">Green and amber are the only colors that carry meaning. Protect that. They mean exactly one thing — enhancing vs. offloading — and are never used decoratively.</p>
+    <div class="sig-demo">
+      <div class="sig-box do">
+        <span class="tag">✓ Do</span>
+        <ul>
+          <li><span class="m">→</span> Use green only for genuine enhancement: reasoning, assumptions named, challenge engaged.</li>
+          <li><span class="m">→</span> Use amber as information, never alarm — offloading is a habit to notice, not a sin to punish.</li>
+          <li><span class="m">→</span> Let the needle and number do the talking; keep surrounding UI neutral.</li>
+        </ul>
+      </div>
+      <div class="sig-box dont">
+        <span class="tag">✕ Don't</span>
+        <ul>
+          <li><span class="m">→</span> Don't use green/amber for unrelated states like success toasts or errors.</li>
+          <li><span class="m">→</span> Don't make amber feel like failure — no red, no warning iconography.</li>
+          <li><span class="m">→</span> Don't stack both signal colors as a decorative gradient.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 TYPE -->
+  <section class="bsec" id="type">
+    <div class="bsec-head"><span class="bsec-num">04</span><h2>Typography</h2></div>
+    <p class="bsec-lead">Three voices. A warm serif for the things worth reading slowly, a clean grotesque for the interface, and a monospace for the instrument — data, labels, the signal readout.</p>
+
+    <div class="type-row">
+      <div class="type-meta"><div class="fam">Newsreader</div><div class="role">SERIF · headlines, coach voice</div></div>
+      <div>
+        <div class="type-spec-serif">AI should make you <em style="font-style:italic;color:var(--enhance-deep)">sharper</em>.</div>
+        <div class="type-scale">Weights 400 / 500 · italic for emphasis · used at display + in the coach's questions</div>
+      </div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><div class="fam">Space Grotesk</div><div class="role">SANS · UI, labels, body</div></div>
+      <div>
+        <div class="type-spec-sans">Open a session and watch the signal move.</div>
+        <div class="type-scale">Weights 400 / 500 / 600 / 700 · the workhorse for everything interface</div>
+      </div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta"><div class="fam">Space Mono</div><div class="role">MONO · data, eyebrows, signal</div></div>
+      <div>
+        <div class="type-spec-mono">COGNITIVE&nbsp;SIGNAL&nbsp;·&nbsp;58&nbsp;ENHANCING</div>
+        <div class="type-scale">Weights 400 / 700 · uppercase, letter-spaced 0.12–0.18em for labels</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 COMPONENTS -->
+  <section class="bsec" id="components">
+    <div class="bsec-head"><span class="bsec-num">05</span><h2>Components</h2></div>
+    <p class="bsec-lead">The core kit, pulled straight from the live product. Pill buttons, mono signal chips, soft warm cards, and the two-sided message thread.</p>
+    <div class="comp-grid">
+      <div class="comp">
+        <div class="label">Buttons</div>
+        <div class="comp-row">
+          <a class="btn btn-primary">Open the demo →</a>
+          <a class="btn btn-ghost">Read the thinking</a>
+        </div>
+      </div>
+      <div class="comp">
+        <div class="label">Signal chips</div>
+        <div class="comp-row">
+          <span class="chip chip-enhance"><span class="dot dot-enhance"></span>Enhancing · 81</span>
+          <span class="chip chip-offload"><span class="dot dot-offload"></span>Offloading · 19</span>
+          <span class="chip chip-neutral">Mixed · 50</span>
+        </div>
+      </div>
+      <div class="comp">
+        <div class="label">Message thread</div>
+        <div class="demo-bubble-coach">What's the assumption underneath that you haven't examined yet? Is it a fact, or a belief you've <em>inherited</em>?</div>
+        <div class="demo-bubble-user">I'm assuming the ceiling is real — but I've only tested it once.</div>
+      </div>
+      <div class="comp">
+        <div class="label">Inputs &amp; controls</div>
+        <div class="demo-input"><span>Bring the real tension…</span><button class="demo-send">→</button></div>
+        <div class="comp-row" style="margin-top:14px">
+          <span class="demo-mode"><span class="mono" style="font-size:9px;letter-spacing:.14em;color:var(--taupe)">MODE</span> <b style="font-weight:500">First Principles</b> <span style="color:var(--taupe)">▾</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 VOICE -->
+  <section class="bsec" id="voice">
+    <div class="bsec-head"><span class="bsec-num">06</span><h2>Voice &amp; tone</h2></div>
+    <p class="bsec-lead">Centaur is a senior advisor in a focused working session — conversational but substantive, never academic, never casual. Warmth is fine. Wit is fine. Neither replaces rigor.</p>
+    <div class="voice-grid">
+      <div class="voice-col do">
+        <h4>Do</h4>
+        <ul>
+          <li><span class="m">+</span> Ask one question at a time, and make it earn its place.</li>
+          <li><span class="m">+</span> Name the assumption before challenging it.</li>
+          <li><span class="m">+</span> Use the user's own words when reflecting back.</li>
+          <li><span class="m">+</span> Push back when reasoning is weak — directly, but respectfully.</li>
+          <li><span class="m">+</span> End on an open question worth sitting with.</li>
+        </ul>
+      </div>
+      <div class="voice-col dont">
+        <h4>Don't</h4>
+        <ul>
+          <li><span class="m">–</span> Flatter weak reasoning to seem supportive.</li>
+          <li><span class="m">–</span> Stack three questions into one turn.</li>
+          <li><span class="m">–</span> Wrap up with tidy, definitive answers.</li>
+          <li><span class="m">–</span> Write the memo. Centaur is for thinking, not producing.</li>
+          <li><span class="m">–</span> Hedge when there's no genuine uncertainty.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 TOKENS -->
+  <section class="bsec" id="tokens">
+    <div class="bsec-head"><span class="bsec-num">07</span><h2>Spacing, radius &amp; shadow</h2></div>
+    <p class="bsec-lead">A 4px base scale, soft warm-tinted shadows, and a small radius set. Generous whitespace is part of the voice — let things breathe.</p>
+    <div class="tok-grid">
+      <div class="tok">
+        <div class="label">Spacing · 4px base</div>
+        <div class="tok-item"><span class="tok-bar" style="width:4px"></span> 4 · xs</div>
+        <div class="tok-item"><span class="tok-bar" style="width:16px"></span> 16 · sm</div>
+        <div class="tok-item"><span class="tok-bar" style="width:32px"></span> 32 · md</div>
+        <div class="tok-item"><span class="tok-bar" style="width:64px"></span> 64 · lg</div>
+        <div class="tok-item"><span class="tok-bar" style="width:96px"></span> 96 · xl</div>
+      </div>
+      <div class="tok">
+        <div class="label">Radius</div>
+        <div class="tok-item"><span class="tok-radius" style="border-top-left-radius:6px"></span> 6 · sm — chips, sends</div>
+        <div class="tok-item"><span class="tok-radius" style="border-top-left-radius:10px"></span> 10 · md — cards</div>
+        <div class="tok-item"><span class="tok-radius" style="border-top-left-radius:16px"></span> 16 · lg — bubbles</div>
+        <div class="tok-item"><span class="tok-radius" style="border-top-left-radius:24px"></span> 24 · xl — feature tiles</div>
+      </div>
+      <div class="tok">
+        <div class="label">Shadow</div>
+        <div class="tok-item"><span class="tok-shadow" style="box-shadow:var(--sh-1)"></span> sh-1 · resting</div>
+        <div class="tok-item"><span class="tok-shadow" style="box-shadow:var(--sh-2)"></span> sh-2 · raised</div>
+        <div class="tok-item"><span class="tok-shadow" style="box-shadow:var(--sh-3)"></span> sh-3 · floating</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <a href="index.html" class="wordmark" style="font-size:1.05rem">
+      <svg viewBox="0 0 32 32" fill="none" width="22" height="22" aria-hidden="true">
+        <circle cx="16" cy="16" r="15" stroke="var(--ink)" stroke-width="1.5"/>
+        <line x1="16" y1="16" x2="25" y2="9" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="16" cy="16" r="2.6" fill="var(--ink)"/>
+      </svg>
+      Centaur
+    </a>
+    <div class="foot-links">
+      <a href="index.html">Landing</a>
+      <a href="product.html">Demo</a>
+      <a href="#color">Color</a>
+      <a href="#type">Type</a>
+    </div>
+    <span class="foot-fine">STAY IN THE LOOP · 2026</span>
+  </footer>
+
+</div>
+</body>
+</html>
